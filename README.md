@@ -26,10 +26,12 @@ stop( float: volume fade in seconds )
 There’s also the ‘playing’ property that can be set directly to pause and play the music.
 
 Gdscript example:
-Music.set_level_and_play("All Menus", "Main Theme")
+    
+    Music.set_level_and_play("All Menus", "Main Theme")
+    
+    if go_to_map_selection:
+        Music.play_stage("Map Selection", Music.ON_BEAT)
 
-if go_to_map_selection:
-    Music.play_stage("Map Selection", Music.ON_BEAT)
 
 Signals.
 For syncing the game with music there are the next_beat, next_bar, on_loop and clip_playing signals.
@@ -43,12 +45,13 @@ on_loop
 clip_playing( sound clip name, track number starting from 0 ) this calls as the sound clip starts playing.
 
 Gdscript example:
-Music.connect("next_beat", self, "do_something")
 
-func do_something(beat):
-    #use fmod (float modulus) or % to find beats.
-    #assuming in common time, 4/4.
-    if beat % 4 == 0:
-        #First beat of bar, same time as on_bar with beat value instead of measure parameter.
-    elif fmod(beat + 1, 2):
-        #Off beats
+    Music.connect("next_beat", self, "do_something")
+    
+    func do_something(beat):
+        #use fmod (float modulus) or % to find beats.
+        #assuming in common time, 4/4.
+        if beat % 4 == 0:
+            #First beat of bar, same time as on_bar with beat value instead of measure parameter.
+        elif fmod(beat + 1, 2):
+            #Off beats
