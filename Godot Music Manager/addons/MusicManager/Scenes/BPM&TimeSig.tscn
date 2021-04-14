@@ -1,0 +1,113 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://addons/MusicManager/Scripts/BPM&TimeSig.gd" type="Script" id=1]
+[ext_resource path="res://addons/MusicManager/Images/SoundPlayer.png" type="Texture" id=2]
+[ext_resource path="res://addons/MusicManager/Images/Time Select.png" type="Texture" id=3]
+
+[sub_resource type="CanvasItemMaterial" id=1]
+blend_mode = 1
+
+[sub_resource type="CanvasItemMaterial" id=2]
+blend_mode = 1
+
+[node name="BPM&TimeSig" type="Control"]
+margin_right = 1024.0
+margin_bottom = 60.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Hub" type="Panel" parent="."]
+margin_top = 20.0
+margin_right = 150.0
+margin_bottom = 60.0
+
+[node name="BGM" type="Label" parent="Hub"]
+margin_left = 15.89
+margin_top = -1.833
+margin_right = 49.89
+margin_bottom = 12.167
+text = "Tempo BPM"
+
+[node name="TimeSig" type="Label" parent="Hub"]
+margin_left = 15.89
+margin_top = 18.209
+margin_right = 110.89
+margin_bottom = 32.209
+text = "Time Signature"
+
+[node name="TimeLine" type="Panel" parent="."]
+self_modulate = Color( 0.568627, 0.568627, 0.568627, 1 )
+material = SubResource( 1 )
+margin_left = 150.0
+margin_top = 20.0
+margin_right = 1024.0
+margin_bottom = 60.0
+focus_mode = 2
+
+[node name="HSeparator" type="HSeparator" parent="."]
+margin_left = 1.0
+margin_top = 39.0
+margin_right = 150.0
+margin_bottom = 43.0
+
+[node name="TimeMeasure" type="Panel" parent="."]
+margin_left = 150.0
+margin_right = 1024.0
+margin_bottom = 20.0
+
+[node name="Highlight" type="Button" parent="TimeMeasure"]
+material = SubResource( 2 )
+margin_right = 100.0
+margin_bottom = 20.0
+rect_scale = Vector2( 1, 0.85 )
+mouse_default_cursor_shape = 10
+shortcut_in_tooltip = false
+
+[node name="PlayMarker" type="TextureRect" parent="TimeMeasure"]
+self_modulate = Color( 0, 0.00784314, 1, 1 )
+margin_left = 17.0
+margin_right = 37.0
+margin_bottom = 33.0
+rect_rotation = 90.0
+texture = ExtResource( 2 )
+expand = true
+
+[node name="StageHighlights" type="Control" parent="."]
+margin_left = 150.0
+margin_right = 151.0
+margin_bottom = 1.0
+
+[node name="TimeMeasures" type="Control" parent="."]
+margin_left = 150.0
+margin_right = 151.0
+margin_bottom = 1.0
+
+[node name="Measure" type="TextureButton" parent="TimeMeasures"]
+anchor_right = 0.82
+anchor_bottom = 0.9
+margin_right = 32.5
+margin_bottom = 19.22
+mouse_default_cursor_shape = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+action_mode = 0
+texture_normal = ExtResource( 3 )
+expand = true
+stretch_mode = 4
+
+[node name="Measure2" type="TextureButton" parent="TimeMeasures"]
+anchor_right = 0.82
+anchor_bottom = 0.9
+margin_left = 100.0
+margin_right = 132.5
+margin_bottom = 19.22
+rect_scale = Vector2( -1, 1 )
+mouse_default_cursor_shape = 2
+action_mode = 0
+texture_normal = ExtResource( 3 )
+expand = true
+stretch_mode = 4
+[connection signal="mouse_entered" from="TimeLine" to="." method="_on_TimeLine_mouse_entered"]
+[connection signal="mouse_exited" from="TimeLine" to="." method="_on_TimeLine_mouse_exited"]

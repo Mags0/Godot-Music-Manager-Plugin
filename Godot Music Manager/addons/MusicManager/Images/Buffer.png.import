@@ -1,0 +1,34 @@
+[remap]
+
+importer="texture"
+type="StreamTexture"
+path="res://.import/Buffer.png-e5cafcfbfc07c14e72f38e9120d76746.stex"
+metadata={
+"vram_texture": false
+}
+
+[deps]
+
+source_file="res://addons/MusicManager/Images/Buffer.png"
+dest_files=[ "res://.import/Buffer.png-e5cafcfbfc07c14e72f38e9120d76746.stex" ]
+
+[params]
+
+compress/mode=1
+compress/lossy_quality=0.5
+compress/hdr_mode=0
+compress/bptc_ldr=0
+compress/normal_map=2
+flags/repeat=0
+flags/filter=true
+flags/mipmaps=false
+flags/anisotropic=false
+flags/srgb=2
+process/fix_alpha_border=false
+process/premult_alpha=false
+process/HDR_as_SRGB=false
+process/invert_color=false
+stream=false
+size_limit=0
+detect_3d=false
+svg/scale=1.0

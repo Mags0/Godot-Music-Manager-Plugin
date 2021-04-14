@@ -1,0 +1,151 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://addons/MusicManager/Scripts/AudioPanel.gd" type="Script" id=1]
+[ext_resource path="res://addons/MusicManager/Images/Buffer.png" type="Texture" id=2]
+
+[node name="AudioPanel" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 1 )
+
+[node name="TrackPanel" type="Panel" parent="."]
+self_modulate = Color( 0.623529, 0.623529, 0.623529, 1 )
+margin_left = 120.03
+margin_top = 37.0
+margin_right = 926.03
+margin_bottom = 200.0
+
+[node name="Buffer" type="TextureRect" parent="TrackPanel"]
+visible = false
+margin_left = 15.0
+margin_top = 12.0
+margin_right = 51.0
+margin_bottom = 48.0
+rect_rotation = 337094.0
+rect_pivot_offset = Vector2( 18, 18 )
+texture = ExtResource( 2 )
+expand = true
+
+[node name="Dialog" type="CenterContainer" parent="."]
+margin_right = 1024.0
+margin_bottom = 262.0
+
+[node name="NewSoundFile" type="FileDialog" parent="Dialog"]
+margin_left = 404.0
+margin_top = 66.0
+margin_right = 620.0
+margin_bottom = 196.0
+window_title = "Open a File"
+mode = 0
+filters = PoolStringArray( "*.wav", "*.ogg", "*.mp3" )
+
+[node name="Levels" type="ItemList" parent="."]
+margin_left = 15.0
+margin_top = 37.0
+margin_right = 103.0
+margin_bottom = 246.0
+allow_rmb_select = true
+
+[node name="AddLevel" type="Button" parent="."]
+margin_left = 14.683
+margin_top = 4.649
+margin_right = 101.683
+margin_bottom = 24.649
+rect_pivot_offset = Vector2( 34.6192, 10 )
+text = "+ Add Level"
+
+[node name="TrackHolder" type="ScrollContainer" parent="."]
+margin_left = 120.03
+margin_top = 37.0
+margin_right = 925.03
+margin_bottom = 200.0
+
+[node name="Holder" type="Control" parent="TrackHolder"]
+margin_right = 300.0
+margin_bottom = 72.0
+rect_min_size = Vector2( 300, 72 )
+
+[node name="Lines" type="Control" parent="TrackHolder/Holder"]
+margin_left = 150.0
+margin_top = 20.0
+margin_right = 190.0
+margin_bottom = 60.0
+
+[node name="AddTrack" type="Button" parent="."]
+margin_left = 121.3
+margin_top = 4.649
+margin_right = 208.3
+margin_bottom = 24.649
+rect_pivot_offset = Vector2( 34.6192, 10 )
+disabled = true
+text = "+ Add Track"
+
+[node name="MarkStage" type="Button" parent="."]
+margin_left = 212.132
+margin_top = 4.649
+margin_right = 325.132
+margin_bottom = 24.649
+rect_pivot_offset = Vector2( 34.6192, 10 )
+disabled = true
+text = "Mark New Stage"
+
+[node name="Stage" type="OptionButton" parent="."]
+margin_left = 841.532
+margin_top = 4.649
+margin_right = 928.532
+margin_bottom = 24.649
+text = "[Select]"
+items = [ "[Select]", null, false, 0, null ]
+selected = 0
+
+[node name="Label" type="Label" parent="Stage"]
+margin_left = -84.2071
+margin_top = -0.82473
+margin_right = 0.792908
+margin_bottom = 13.1753
+text = "Go to stage..."
+
+[node name="Zoom" type="Label" parent="Stage"]
+margin_left = -153.18
+margin_top = -5.26
+margin_right = -112.18
+margin_bottom = 8.74
+text = "Zoom"
+
+[node name="ZoomSlider" type="HSlider" parent="Stage"]
+margin_left = -168.0
+margin_top = 13.0
+margin_right = -99.0
+margin_bottom = 29.0
+max_value = 10.0
+value = 10.0
+ticks_on_borders = true
+
+[node name="PlayStop" type="Button" parent="."]
+margin_left = 345.18
+margin_top = 4.649
+margin_right = 415.18
+margin_bottom = 24.649
+toggle_mode = true
+text = "  > Play   "
+
+[node name="Snap" type="Button" parent="."]
+margin_left = 419.0
+margin_top = 4.649
+margin_right = 517.0
+margin_bottom = 24.649
+toggle_mode = true
+text = "Snap to beats"
+
+[node name="VSeparator" type="VSeparator" parent="."]
+margin_left = 333.5
+margin_top = 5.649
+margin_right = 337.5
+margin_bottom = 25.649
+[connection signal="file_selected" from="Dialog/NewSoundFile" to="." method="_on_NewSoundFile_file_selected"]
+[connection signal="item_selected" from="Levels" to="." method="_on_Levels_item_selected"]
+[connection signal="button_up" from="AddLevel" to="." method="_on_AddLevel_button_up"]
+[connection signal="button_up" from="AddTrack" to="." method="_on_AddTrack_button_up"]
+[connection signal="button_up" from="MarkStage" to="." method="_on_MarkStage_button_up"]
+[connection signal="item_selected" from="Stage" to="." method="_on_Stage_item_selected"]
+[connection signal="button_up" from="PlayStop" to="." method="_on_PlayStop_button_up"]
