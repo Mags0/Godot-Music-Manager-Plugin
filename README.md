@@ -27,10 +27,10 @@ There’s also the ‘playing’ property that can be set directly to pause and 
 
 Gdscript example:
     
-    Music.set_level_and_play("All Menus", "Main Theme")
+    Music.set_level_and_play("All Menus", "Main Theme", 4)
     
     if go_to_map_selection:
-        Music.play_stage("Map Selection", Music.ON_BEAT)
+        Music.play_stage("Map Selection", Music.ON_BEAT, 1, true)
 
 
 Signals.
