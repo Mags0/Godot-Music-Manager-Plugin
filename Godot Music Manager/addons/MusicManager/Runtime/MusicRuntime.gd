@@ -152,8 +152,9 @@ func play_stage(stage: String, on_time:= ON_BAR, fade:= 0.5, overdub:= false):
 		var findBeat = allBeatsAndBars[currentLevel][1].find(curTimeSelInUnits[0]) + 1
 		beatTrigger = findBeat
 		beatIniTrigger = findBeat
-		while allBeatsAndBars[currentLevel][0][findBeat] == -1:
+		while allBeatsAndBars[currentLevel][0].find(allBeatsAndBars[currentLevel][1][findBeat]) == -1:
 			findBeat += 1
+		findBeat = allBeatsAndBars[currentLevel][0].find(allBeatsAndBars[currentLevel][1][findBeat])
 		barTrigger = findBeat
 		barIniTrigger = findBeat
 		if fade != 0:
