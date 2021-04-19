@@ -181,8 +181,9 @@ func play_now(reset:= true):
 		var findBeat = allBeatsAndBars[currentLevel][1].find(curTimeSelInUnits[0]) + 1
 		beatTrigger = findBeat
 		beatIniTrigger = findBeat
-		while allBeatsAndBars[currentLevel][0][findBeat] == -1:
+		while allBeatsAndBars[currentLevel][0].find(allBeatsAndBars[currentLevel][1][findBeat]) == -1:
 			findBeat += 1
+		findBeat = allBeatsAndBars[currentLevel][0].find(allBeatsAndBars[currentLevel][1][findBeat])
 		barTrigger = findBeat
 		barIniTrigger = findBeat
 	playing = true
