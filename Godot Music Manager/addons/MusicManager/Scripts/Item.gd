@@ -7,11 +7,13 @@ onready var track = get_node("../..")
 onready var musicClip = get_child(0)
 var copying : bool
 var index : int
+var file
 
 func _ready() -> void:
 	rect_position.x = musicMan.trackItems[musicMan.currentLevel][track.get_position_in_parent()-2][1][get_position_in_parent()]
 	musicMan.connect("loop", self, "music_loop")
 	musicMan.connect("next_beat", self, "sync_up")
+	file = musicClip.stream
 	track.rid_of_label()
 
 func _process(delta: float) -> void:
@@ -89,3 +91,8 @@ func _on_Item_button_up() -> void:
 	rect_position.x = clamp(rect_position.x, 0, 999999)
 	musicMan.trackItems[musicMan.currentLevel][track.get_position_in_parent()-2][1][get_position_in_parent()] = rect_position.x
 	pass # Replace with function body.
+
+func file_change():
+	text = file.get_path()
+	musicMan.trackItems[musicMan.currentLevel][track.get_position_in_parent()-2][0][get_position_in_parent()] = file.get_path()
+	pass
