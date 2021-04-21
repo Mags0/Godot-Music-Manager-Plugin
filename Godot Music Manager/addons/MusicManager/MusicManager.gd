@@ -6,6 +6,7 @@ var panel = load("res://addons/MusicManager/Scenes/AudioPanel.tscn").instance()
 func _enter_tree():
 	add_control_to_bottom_panel(panel, "Music")
 	panel.rect_min_size.y = get_editor_interface().get_editor_viewport().rect_size.y * 0.35
+	panel.fileSys = get_editor_interface().get_resource_filesystem()
 	add_autoload_singleton("Music", "res://addons/MusicManager/Runtime/MusicRuntime.gd")
 	connect("resource_saved", self, "save")
 	pass
