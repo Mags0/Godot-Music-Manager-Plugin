@@ -2,6 +2,7 @@ tool
 extends Control
 
 var musicData = load("res://addons/MusicManager/SaveData/MusicManagerData.tres")
+var fileSys
 var levels = {}							#Level names [track amount]
 #var newStage : Array = [1, 5, []]		#Start beat, end beat, tracks
 var stages = {}							#Level name [stage name] [stage]
@@ -257,6 +258,7 @@ func _on_NewSoundFile_file_selected(path: String) -> void:
 	newItem.get_child(0).bus = AudioServer.get_bus_name(currentlySelectedTrack.busOpt.get_selected_id())
 	newItem.text = path
 	newItem.rect_size.x = soundFile.get_length()*200
+	fileSys.connect("filesystem_changed", newItem, "file_change")
 	currentlySelectedTrack.timeline.add_child(newItem)
 	pass # Replace with function body.
 
@@ -369,6 +371,7 @@ func select_level(index: int):
 				newItem.get_child(0).bus = AudioServer.get_bus_name(newTrack.busOpt.get_selected_id())
 				newItem.text = trackItems[currentLevel][trackNum][0][itemInd]
 				newItem.rect_size.x = soundFile.get_length()*200
+				fileSys.connect("filesystem_changed", newItem, "file_change")
 				newTrack.timeline.add_child(newItem)
 	yield(get_tree().create_timer(0.5),"timeout")
 	update_holder_size()
