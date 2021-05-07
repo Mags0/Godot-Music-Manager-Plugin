@@ -1,14 +1,14 @@
 tool
 extends Control
 
-var musicData = load("res://addons/MusicManager/SaveData/MusicManagerData.tres")
+var musicData
 var fileSys
 var levels = {}							#Level names [track amount]
-#var newStage : Array = [1, 5, []]		#Start beat, end beat, tracks
+#Stage data Array = [1, 5, []]			#Start beat, end beat, tracks
 var stages = {}							#Level name [stage name] [stage]
-#var newBPM : Array = [[1], [120]]		#Beat, Tempo
+#BPM Array = [[1], [120]]				#Beat, Tempo
 var bpmTracks = {}						#Level name [bpm]
-#var newTimeSig : Array = [[4], [4]]		#top, bottom
+#Time signature Array = [[4], [4]]		#top, bottom
 var timeSigTracks = {}					#Level name [Time sig]
 var allBeatsAndBars = {}				#Level name [[bars] [beats]]
 var trackControls = {}					#Level name [[volume] [bus name]
@@ -47,6 +47,32 @@ onready var addStageButton = $MarkStage
 var updateTrackCheck : bool
 
 func _ready() -> void:
+	var configFile = ConfigFile.new()
+	var err = configFile.load("user://MusicDataPath.cfg")
+	if err == OK:
+		var data = configFile.get_value("Music_Data", "File_Path")
+		musicData = load(data)
+	else:
+		musicData = load("res://addons/MusicManager/SaveData/MusicManagerData.tres")
+	load_data()
+	Line = TextureRect.new()
+	Line.name = "Beat"
+	Line.texture = whiteLine
+	Line.self_modulate.a = 0.25
+	Line.expand = true
+	Line.stretch_mode = TextureRect.STRETCH_SCALE_ON_EXPAND
+	Line.rect_size = Vector2(1, holder.rect_min_size.y-32)
+	pass
+
+func load_data() -> void:
+	levelPicker.clear()
+	levels.clear()
+	stages.clear()
+	bpmTracks.clear()
+	timeSigTracks.clear()
+	allBeatsAndBars.clear()
+	trackControls.clear()
+	trackItems.clear()
 	levels = musicData.levels.duplicate()
 	stages = musicData.stages.duplicate()
 	bpmTracks = musicData.bpmTracks.duplicate()
@@ -56,12 +82,6 @@ func _ready() -> void:
 	trackItems = musicData.trackItems.duplicate()
 	for level in levels.keys():
 		levelPicker.add_item(level)
-	Line = TextureRect.new()
-	Line.name = "Beat"
-	Line.texture = whiteLine
-	Line.expand = true
-	Line.stretch_mode = TextureRect.STRETCH_SCALE_ON_EXPAND
-	Line.rect_size = Vector2(1, holder.rect_min_size.y-32)
 
 func _process(delta: float) -> void:
 	if playing:
@@ -140,9 +160,8 @@ func _on_AddTrack_button_up() -> void:
 	levels[currentLevel][0] += 1
 	var newTrack = track.instance()
 	holder.add_child(newTrack)
+	holder.move_child(lines, holder.get_child_count()-1)
 	update_holder_size()
-	for line in lines.get_children():
-		line.rect_size.y = holder.rect_min_size.y-32
 	pass
 
 func _on_MarkStage_button_up() -> void:
@@ -161,7 +180,7 @@ func _on_MarkStage_button_up() -> void:
 		newStageHL.text = namer.text
 		newStageHL.rect_position.x = curTimeSelInUnits[0]
 		var Ysize = markStage[2].size()-1
-		newStageHL.get_child(0).rect_size = Vector2(curTimeSelInUnits[1] - curTimeSelInUnits[0], markStage[2][Ysize]*60+markStage[2][Ysize]-20)
+		newStageHL.get_child(0).rect_size = Vector2(curTimeSelInUnits[1] - curTimeSelInUnits[0] + 1, markStage[2][Ysize]*60+markStage[2][Ysize]-20)
 		get_node("TrackHolder/Holder/BPM&TimeSig").stageHighlights.add_child(newStageHL)
 		stageSelecter.add_item(namer.text, stages[currentLevel].keys().find(namer.text)+1)
 	namer.queue_free()
@@ -196,18 +215,19 @@ func stop_now():
 			for item in track.timeline.get_children():
 				item.musicClip.stop()
 
-func draw_time_lines():
+func draw_time_lines(noVisibleUpdate:= false):
 	var when = bpmTracks[currentLevel][0].duplicate()
 	var bpm = bpmTracks[currentLevel][1].duplicate()
 	var TStop = timeSigTracks[currentLevel][0].duplicate()
 	var TSBottom = timeSigTracks[currentLevel][1].duplicate()
 	var beats = []
 	var bars = []
-	if lines.get_child_count() > 0:
+	if lines.get_child_count() > 0 && !noVisibleUpdate:
 		for child in lines.get_children():
 			child.queue_free()
 	when.append(int(when[when.size() - 1]) + 240)
 	var markerPosAddup = 0.0
+	var lastBarPosition = -1.0
 	for beatMarker in when.size()-1:
 		var barLength = int(TStop[beatMarker])
 		var tempo = 60/float(bpm[beatMarker])
@@ -223,16 +243,24 @@ func draw_time_lines():
 				tsBottomAmount = 100
 		var beatInBar : int
 		for beat in length:
+			var nextBeat = (tempo*beat)*tsBottomAmount
 			if beatInBar >= barLength:
 				beatInBar = 0
-			var nextBeat = (tempo*beat)*tsBottomAmount
-			var newLine = Line.duplicate()
-			newLine.rect_position.x = markerPosAddup + nextBeat
-			lines.add_child(newLine)
+			var newLine
+			if !noVisibleUpdate:
+				newLine = Line.duplicate()
+				newLine.rect_position.x = markerPosAddup + nextBeat
+				lines.add_child(newLine)
 			beats.append(markerPosAddup + nextBeat)
-			if beatInBar == 0:
+			if beatInBar == 0 && markerPosAddup + nextBeat != lastBarPosition:
 				bars.append(markerPosAddup + nextBeat)
-				newLine.rect_size.x = 2
+				if !noVisibleUpdate:
+					newLine.rect_size.x = 2
+					var barnum = Label.new()
+					barnum.text = str(bars.size())
+					newLine.add_child(barnum)
+					barnum.rect_position.y = -21
+				lastBarPosition = markerPosAddup + nextBeat
 			markPosAdd = nextBeat
 			beatInBar += 1
 		markerPosAddup += markPosAdd
@@ -245,9 +273,11 @@ func update_holder_size():
 	if lines.get_child_count() > 0:
 		var trackSpace = levels[currentLevel][0] + 2
 		holder.rect_min_size = Vector2(lines.get_child(lines.get_child_count()-1).rect_position.x+300, (60*trackSpace)+trackSpace-50)
+		for line in lines.get_children():
+			line.rect_size.y = holder.rect_min_size.y-32
 
 func _on_NewSoundFile_file_selected(path: String) -> void:
-	var trackIndex = currentlySelectedTrack.get_position_in_parent()-2
+	var trackIndex = currentlySelectedTrack.trackNumber
 	if !trackItems[currentLevel].has(trackIndex):
 		trackItems[currentLevel][trackIndex] = [[], []]
 	trackItems[currentLevel][trackIndex][0].append(path)
@@ -306,6 +336,7 @@ func _on_Levels_item_selected(index: int) -> void:
 	pass # Replace with function body.
 
 func select_level(index: int):
+	playing = false
 	currentLevel = levelPicker.get_item_text(index)
 	currentLevelIndex = index
 	$TrackHolder.visible = false
@@ -334,7 +365,7 @@ func select_level(index: int):
 		bpmtsTrack.create_new_marker(0, false, true)
 	else:
 		yield(get_tree(),"idle_frame")
-		draw_time_lines()
+		draw_time_lines(true)
 	if existingLevel:
 		for i in bpmTracks[currentLevel][0].size():
 			var aMarker
@@ -345,7 +376,9 @@ func select_level(index: int):
 			aMarker.controls[0].text = bpmTracks[currentLevel][1][i]
 			aMarker.controls[1].text = timeSigTracks[currentLevel][0][i]
 			aMarker.controls[2].select(timeSigTracks[currentLevel][1][i])
-		bpmtsTrack.index_markers()
+		bpmtsTrack.index_markers(bpmtsTrack.timeline[0].get_child(0))
+		yield(get_tree(),"idle_frame")
+		draw_time_lines()
 	if stages[currentLevel].keys().size() > 0:
 		var allStagesInLevel = stages[currentLevel].keys()
 		for stage in allStagesInLevel.size():
@@ -357,7 +390,7 @@ func select_level(index: int):
 			var selTracks = stages[currentLevel][allStagesInLevel[stage]][2].duplicate()
 			newStageHL.rect_position.x = startTime
 			var Ysize = selTracks.size()-1
-			newStageHL.get_child(0).rect_size = Vector2(endTime - startTime, selTracks[Ysize]*60+selTracks[Ysize]-20)
+			newStageHL.get_child(0).rect_size = Vector2(endTime - startTime + 1, selTracks[Ysize]*60+selTracks[Ysize]-20)
 			bpmtsTrack.stageHighlights.add_child(newStageHL)
 	for trackNum in levels[currentLevel][0]:
 		var newTrack = track.instance()
@@ -373,19 +406,20 @@ func select_level(index: int):
 				newItem.rect_size.x = soundFile.get_length()*200
 				fileSys.connect("filesystem_changed", newItem, "file_change")
 				newTrack.timeline.add_child(newItem)
+	holder.move_child(lines, holder.get_child_count()-1)
 	yield(get_tree().create_timer(0.5),"timeout")
 	update_holder_size()
-	for line in lines.get_children():
-		line.rect_size.y = holder.rect_min_size.y-32
 	levels[currentLevel][1] = true
 	
 	stageSelecter.clear()
-	stageSelecter.add_item("[Select]", 0)
+	stageSelecter.add_item("[Go To Stage]", 0)
 	for newStageIndex in stages[currentLevel].keys().size():
 		stageSelecter.add_item(stages[currentLevel].keys()[newStageIndex], newStageIndex+1)
 	
 	$TrackHolder.visible = true
 	buffer.visible = false
+	bpmtsTrack.measures[1].rect_position.x = allBeatsAndBars[currentLevel][0][1]+1
+	bpmtsTrack.highlight()
 	pass # Replace with function body.
 
 func new_delete_button(buttonText: String):
@@ -396,3 +430,22 @@ func new_delete_button(buttonText: String):
 		deleteButton.text = "    X Delete " + buttonText + "    "
 		add_child(deleteButton)
 		return deleteButton
+
+func _on_OpenMusicData_button_up() -> void:
+	$Dialog/OpenMusicData.popup_centered_minsize(Vector2(500, 500))
+	pass # Replace with function body.
+
+func _on_OpenMusicData_file_selected(path: String) -> void:
+	var file = load(path)
+	if file is MusicData:
+		playing = false
+		musicData = file
+		var configFile = ConfigFile.new()
+		configFile.set_value("Music_Data", "File_Path", path)
+		configFile.save("user://MusicDataPath.cfg")
+		$TrackHolder.visible = false
+		for track in holder.get_children():
+			if track != lines:
+				track.queue_free()
+		load_data()
+	pass # Replace with function body.

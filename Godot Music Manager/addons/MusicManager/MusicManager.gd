@@ -22,7 +22,7 @@ func _process(delta: float) -> void:
 		panel.get_node("TrackPanel").rect_size = size
 		panel.get_node("TrackHolder").rect_size = size
 		panel.get_node("Levels").rect_size.y = size.y
-		panel.get_node("Stage").rect_position.x = get_editor_interface().get_editor_viewport().rect_size.x - 110
+		panel.get_node("Stage").rect_position.x = get_editor_interface().get_editor_viewport().rect_size.x - 238
 		panel.get_node("Dialog").rect_min_size = Vector2(get_editor_interface().get_editor_viewport().rect_size.x, size.y)
 
 func save(resource):

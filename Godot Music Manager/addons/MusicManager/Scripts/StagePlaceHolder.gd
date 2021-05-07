@@ -33,7 +33,7 @@ func _on_StagePlaceHolder_button_down() -> void:
 			musicMan.deleteButton = false
 			musicMan.stages[musicMan.currentLevel].erase(text)
 			musicMan.stageSelecter.clear()
-			musicMan.stageSelecter.add_item("[Select]", 0)
+			musicMan.stageSelecter.add_item("[Go To Stage]", 0)
 			for newStageIndex in musicMan.stages[musicMan.currentLevel].keys().size():
 				musicMan.stageSelecter.add_item(musicMan.stages[musicMan.currentLevel].keys()[newStageIndex], newStageIndex+1)
 			queue_free()

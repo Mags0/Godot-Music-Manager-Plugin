@@ -13,16 +13,18 @@ var mouseXPosition : float
 onready var volume = $Volume
 var actualVolume : float
 var isLoaded : bool
+var trackNumber : int
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	var amount = holder.get_child_count() - 2
 	rect_position.y = (60*amount)+amount
+	trackNumber = get_position_in_parent()-2
 	if isLoaded:
-		volume.value = musicMan.trackControls[musicMan.currentLevel][0][get_position_in_parent()-2]
+		volume.value = musicMan.trackControls[musicMan.currentLevel][0][trackNumber]
 		for busInd in AudioServer.get_bus_count():
 			busOpt.add_item(AudioServer.get_bus_name(busInd), busInd)
-		var selectedBus = musicMan.trackControls[musicMan.currentLevel][1][get_position_in_parent()-2]
+		var selectedBus = musicMan.trackControls[musicMan.currentLevel][1][trackNumber]
 		busOpt.select(selectedBus)
 		busOpt.text = AudioServer.get_bus_name(selectedBus)
 		yield(get_tree(),"idle_frame")
@@ -40,7 +42,7 @@ func _process(delta: float) -> void:
 	timeline.rect_size.x = holder.rect_min_size.x - 150
 	selHighlight.rect_size.x = holder.rect_min_size.x
 	selHighlight.visible = selected
-	musicMan.trackControls[musicMan.currentLevel][1][get_position_in_parent()-2] = busOpt.get_selected_id()
+	musicMan.trackControls[musicMan.currentLevel][1][trackNumber] = busOpt.get_selected_id()
 	pass
 
 func _on_TimeLine_mouse_entered() -> void:
@@ -73,19 +75,17 @@ func _input(event: InputEvent) -> void:
 					del.queue_free()
 					for item in timeline.get_children():
 						item.delete_item()
-					var childIndex = get_position_in_parent()-1
-					musicMan.trackControls[musicMan.currentLevel][0].remove(childIndex-2)
-					musicMan.trackControls[musicMan.currentLevel][1].remove(childIndex-2)
+					var childIndex = trackNumber
+					musicMan.trackControls[musicMan.currentLevel][0].remove(childIndex-1)
+					musicMan.trackControls[musicMan.currentLevel][1].remove(childIndex-1)
 					holder.remove_child(self)
-					while childIndex < holder.get_child_count()-1:
+					while childIndex < holder.get_child_count()-2:#minus two for lines
 						childIndex += 1
 						var currentTrack = holder.get_child(childIndex)
 						currentTrack.rect_position.y -= 61
 						currentTrack.set_controls_to_music_man()
 					musicMan.levels[musicMan.currentLevel][0] -= 1
 					musicMan.update_holder_size()
-					for line in musicMan.lines.get_children():
-						line.rect_size.y = holder.rect_min_size.y-32
 					musicMan.deleteButton = false
 					queue_free()
 				else:
@@ -111,9 +111,9 @@ func rid_of_label():
 
 func _on_Volume_value_changed(value: float) -> void:
 	actualVolume = value * 4 - 20
-	musicMan.trackControls[musicMan.currentLevel][0][get_position_in_parent()-2] = value
+	musicMan.trackControls[musicMan.currentLevel][0][trackNumber] = value
 	pass # Replace with function body.
 
 func set_controls_to_music_man():
-	musicMan.trackControls[musicMan.currentLevel][0][get_position_in_parent()-2] = volume.value
+	musicMan.trackControls[musicMan.currentLevel][0][trackNumber] = volume.value
 	pass

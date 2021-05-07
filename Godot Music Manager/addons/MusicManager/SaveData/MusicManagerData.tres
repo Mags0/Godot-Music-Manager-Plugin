@@ -5,23 +5,16 @@
 [resource]
 script = ExtResource( 1 )
 levels = {
-
 }
 stages = {
-
 }
 bpmTracks = {
-
 }
 timeSigTracks = {
-
 }
 allBeatsAndBars = {
-
 }
 trackControls = {
-
 }
 trackItems = {
-
 }

@@ -30,6 +30,9 @@ margin_left = 150.0
 margin_right = 1024.0
 margin_bottom = 60.0
 focus_mode = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="Volume" type="HSlider" parent="."]
 margin_left = 32.0
@@ -38,7 +41,6 @@ margin_right = 146.0
 margin_bottom = 27.0
 max_value = 10.0
 value = 5.0
-ticks_on_borders = false
 
 [node name="BusOption" type="OptionButton" parent="."]
 margin_left = 5.0
@@ -46,7 +48,7 @@ margin_top = 32.0
 margin_right = 146.0
 margin_bottom = 52.0
 text = "Master"
-items = [ "Master", null, false, 0, null, "Master", null, false, 0, null, "New Bus", null, false, 1, null, "Master", null, false, 0, null, "New Bus", null, false, 1, null ]
+items = [ "Master", null, false, 0, null, "Master", null, false, 0, null, "New Bus", null, false, 1, null, "Master", null, false, 0, null, "New Bus", null, false, 1, null, "Master", null, false, 0, null, "Reverb", null, false, 1, null, "Master", null, false, 0, null, "Reverb", null, false, 1, null ]
 selected = 0
 
 [node name="Label" type="Label" parent="."]

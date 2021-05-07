@@ -7,6 +7,7 @@ export var fixed : bool
 onready var theTrack = get_node("../..")
 var isLoaded : bool
 onready var controls : Array = [$BPM, $TimeSigTop, $TimeSigBottom]
+var isDeleting : bool
 
 func _ready() -> void:
 	changed = -2.0
@@ -47,26 +48,22 @@ func _process(delta: float) -> void:
 			musicMan.bpmTracks[musicMan.currentLevel][0][index()] = align_to_beats(true)
 			changed = 0.25
 		elif Input.is_mouse_button_pressed(BUTTON_RIGHT):
-			var parentNode = get_node("..")
-			var indexNum = index()
-			musicMan.bpmTracks[musicMan.currentLevel][0].remove(indexNum)
-			musicMan.bpmTracks[musicMan.currentLevel][1].remove(indexNum)
-			musicMan.timeSigTracks[musicMan.currentLevel][0].remove(indexNum)
-			musicMan.timeSigTracks[musicMan.currentLevel][1].remove(indexNum)
+			isDeleting = true
+			index()
+			musicMan.bpmTracks[musicMan.currentLevel][0].remove(musicMan.bpmTracks[musicMan.currentLevel][0].size()-1)
+			musicMan.bpmTracks[musicMan.currentLevel][1].remove(musicMan.bpmTracks[musicMan.currentLevel][1].size()-1)
+			musicMan.timeSigTracks[musicMan.currentLevel][0].remove(musicMan.timeSigTracks[musicMan.currentLevel][0].size()-1)
+			musicMan.timeSigTracks[musicMan.currentLevel][1].remove(musicMan.timeSigTracks[musicMan.currentLevel][1].size()-1)
 			musicMan.deleteButton = false
-			parentNode.remove_child(self)
-			musicMan.draw_time_lines()
-			for marker in parentNode.get_child_count():
-				parentNode.get_child(marker).align_to_beats(true)
-				parentNode.get_child(marker).changed = 0.25 + (marker*0.1)
 			queue_free()
 	
 	if changed > 0:
 		changed -= delta
 	elif changed > -1:
 		changed = -2.0
-		musicMan.draw_time_lines()
+		musicMan.draw_time_lines(isLoaded)
 		align_to_beats()
+		isLoaded = false
 
 func align_to_beats(findBeat:= false):
 	var allBeats = musicMan.allBeatsAndBars[musicMan.currentLevel][1].duplicate()
@@ -85,7 +82,7 @@ func align_to_beats(findBeat:= false):
 
 func index(indexMarkers:= true):
 	if indexMarkers:
-		theTrack.index_markers()
+		theTrack.index_markers(self)
 	return theTrack.markerPositions.find(rect_position.x)
 
 func update_index_to_manager():

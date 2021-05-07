@@ -1,7 +1,7 @@
 extends Node
 
 enum {ON_BEAT, ON_BAR, ON_LOOP, INSTANT}
-var musicData = preload("res://addons/MusicManager/SaveData/MusicManagerData.tres")
+var musicData
 var levels = {}
 var stages = {}
 var allBeatsAndBars = {}
@@ -25,6 +25,13 @@ signal next_bar(measure)
 signal clip_playing(clip_name, track)
 
 func _init() -> void:
+	var configFile = ConfigFile.new()
+	var err = configFile.load("user://MusicDataPath.cfg")
+	if err == OK:
+		var data = configFile.get_value("Music_Data", "File_Path")
+		musicData = load(data)
+	else:
+		musicData = load("res://addons/MusicManager/SaveData/MusicManagerData.tres")
 	levels = musicData.levels.duplicate()
 	stages = musicData.stages.duplicate()
 	allBeatsAndBars = musicData.allBeatsAndBars.duplicate()

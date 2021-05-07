@@ -65,7 +65,7 @@ func _process(delta: float) -> void:
 				if distend < distanceend:
 					distanceend = distend
 					closestend = i
-			measures[1].rect_position.x = closestend
+			measures[1].rect_position.x = closestend + 1
 		highlight()
 	else:
 		moving -= delta
@@ -82,7 +82,7 @@ func highlight():
 	$TimeMeasure/Highlight.rect_position.x = measures[0].rect_position.x
 	$TimeMeasure/Highlight.rect_size.x = measures[1].rect_position.x - measures[0].rect_position.x
 	musicMan.curTimeSelInUnits[0] = measures[0].rect_position.x
-	musicMan.curTimeSelInUnits[1] = measures[1].rect_position.x
+	musicMan.curTimeSelInUnits[1] = measures[1].rect_position.x - 1
 
 func _on_TimeLine_mouse_entered() -> void:
 	hovering = true
@@ -110,11 +110,17 @@ func create_new_marker(Xpos: float, loaded:= false, fixedStart:= false):
 	if loaded:
 		return newBPMTS
 
-func index_markers():
+func index_markers(caller):
+	var atCaller = false
 	for marker in timeline[0].get_children():
-		marker.update_index_to_manager()
+		if !marker.isDeleting:
+			if marker == caller:
+				atCaller = true
+			if atCaller:
+				marker.update_index_to_manager()
 	var positions = []
 	for marker in timeline[0].get_children():
-		positions.append(marker.rect_position.x)
+		if !marker.isDeleting:
+			positions.append(marker.rect_position.x)
 	positions.sort()
 	markerPositions = positions.duplicate()
