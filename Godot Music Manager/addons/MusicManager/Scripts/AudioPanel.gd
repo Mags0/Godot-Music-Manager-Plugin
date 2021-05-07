@@ -173,14 +173,14 @@ func _on_MarkStage_button_up() -> void:
 		for track in holder.get_children():
 			if track.name != "Lines" && track.name != "BPM&TimeSig":
 				if track.selected:
-					markStage[2].append(track.get_position_in_parent())
+					markStage[2].append(track.trackNumber)
 		stages[currentLevel][namer.text] = markStage.duplicate()
 		var newStageHL = stageHighlight.instance()
 		newStageHL.musicMan = self
 		newStageHL.text = namer.text
 		newStageHL.rect_position.x = curTimeSelInUnits[0]
 		var Ysize = markStage[2].size()-1
-		newStageHL.get_child(0).rect_size = Vector2(curTimeSelInUnits[1] - curTimeSelInUnits[0] + 1, markStage[2][Ysize]*60+markStage[2][Ysize]-20)
+		newStageHL.get_child(0).rect_size = Vector2(curTimeSelInUnits[1] - curTimeSelInUnits[0] + 1, (markStage[2][Ysize]+1)*60+markStage[2][Ysize]+40)
 		get_node("TrackHolder/Holder/BPM&TimeSig").stageHighlights.add_child(newStageHL)
 		stageSelecter.add_item(namer.text, stages[currentLevel].keys().find(namer.text)+1)
 	namer.queue_free()
@@ -302,7 +302,7 @@ func go_to_stage(stage_name: String):
 		if track.name != "Lines" && track.name != "BPM&TimeSig":
 			track.selected = false
 	for trackInd in stages[currentLevel][stage_name][2]:
-		holder.get_child(trackInd-1).selected = true
+		holder.get_child(trackInd+1).selected = true
 	pass
 
 func _on_Stage_item_selected(ID: int) -> void:
@@ -390,7 +390,7 @@ func select_level(index: int):
 			var selTracks = stages[currentLevel][allStagesInLevel[stage]][2].duplicate()
 			newStageHL.rect_position.x = startTime
 			var Ysize = selTracks.size()-1
-			newStageHL.get_child(0).rect_size = Vector2(endTime - startTime + 1, selTracks[Ysize]*60+selTracks[Ysize]-20)
+			newStageHL.get_child(0).rect_size = Vector2(endTime - startTime + 1, (selTracks[Ysize]+1)*60+selTracks[Ysize]+40)
 			bpmtsTrack.stageHighlights.add_child(newStageHL)
 	for trackNum in levels[currentLevel][0]:
 		var newTrack = track.instance()
