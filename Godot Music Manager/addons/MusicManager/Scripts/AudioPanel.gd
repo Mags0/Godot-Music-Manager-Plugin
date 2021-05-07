@@ -302,7 +302,7 @@ func go_to_stage(stage_name: String):
 		if track.name != "Lines" && track.name != "BPM&TimeSig":
 			track.selected = false
 	for trackInd in stages[currentLevel][stage_name][2]:
-		holder.get_child(trackInd).selected = true
+		holder.get_child(trackInd-1).selected = true
 	pass
 
 func _on_Stage_item_selected(ID: int) -> void:
