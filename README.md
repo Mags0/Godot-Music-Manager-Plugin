@@ -1,8 +1,6 @@
 # Godot-Music-Manager-Plugin
 A plugin with UI, signals and functions for easy music implementation.
 
-!!Do not overwrite 'MusicManager/SaveData' in your project when updating the plugin!!
-
 The plugin UI is a DAW like interface with a single tempo measured in crotchets/quarter notes and time signature track and an optional amount of audio tracks with volume and bus control.
 
 The manager has a workflow of Level 1 > Stage 1, Stage 2, etc. Level 2 > Stage 1, Stage 2, etc. e.g. Level – Boss fight, Stage – Phase2. The stages hold 3 pieces of data – start time, end time and selected tracks.
