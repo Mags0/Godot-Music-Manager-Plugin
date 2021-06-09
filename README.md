@@ -6,7 +6,7 @@ The plugin UI is a DAW like interface with a single tempo measured in crotchets/
 The manager has a workflow of Level 1 > Stage 1, Stage 2, etc. Level 2 > Stage 1, Stage 2, etc. e.g. Level – Boss fight, Stage – Phase2. The stages hold 3 pieces of data – start time, end time and selected tracks.
 
 The interface has a two keyboard shortcuts:
-Save is ctrl + S however the plugin saves automatically with the resource_saved signal. Data is saved to a custom resource in the SaveData directory.
+Save is ctrl + S however the plugin saves automatically with the resource_saved signal. By default data is saved to a custom resource in the SaveData directory, this can be changed by making a new MusicData resource and assigning it by clicking the 'Music Data' button.
 To duplicate a sound clip is shift + D (couldn’t use ctrl + D as the plugin doesn’t override the other docks).
 
 Left clicking a level, track controls, clip or stage will show a delete option.
