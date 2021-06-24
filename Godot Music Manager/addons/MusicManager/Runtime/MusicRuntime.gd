@@ -136,7 +136,7 @@ func play_stage(stage: String, on_time:= ON_BAR, fade:= 0.5, overdub:= false):
 		else:
 			curTrackNode.selected = false
 	for trackNode in stages[currentLevel][stage][2]:
-		curlevelNode.get_child(trackNode-2).selected = true
+		curlevelNode.get_child(trackNode).selected = true
 	
 	curTimeSelInUnits[0] = stages[currentLevel][stage][0]
 	curTimeSelInUnits[1] = stages[currentLevel][stage][1]
